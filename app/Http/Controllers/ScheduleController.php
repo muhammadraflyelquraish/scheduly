@@ -88,7 +88,7 @@ class ScheduleController extends Controller
                 ->first();
 
             if ($existSchedule) {
-                return redirect()->back()->with('failed', 'Jadwal sudah ada');
+                return redirect()->back()->with('failed', 'Jadwal sudah ada')->withInput();
             }
 
             Schedule::create($request->all());
@@ -132,7 +132,7 @@ class ScheduleController extends Controller
                 ->first();
 
             if ($existSchedule) {
-                return redirect()->back()->with('failed', 'Jadwal sudah ada');
+                return redirect()->back()->with('failed', 'Jadwal sudah ada')->withInput();
             }
 
             Schedule::findOrFail($id)->update($request->all());

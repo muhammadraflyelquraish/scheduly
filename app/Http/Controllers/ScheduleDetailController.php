@@ -25,20 +25,61 @@ class ScheduleDetailController extends Controller
 
     function store(Request $request)
     {
-        // $scheduleDetail = ScheduleDetail::query()
-        //     // ->where('schedule_id', $request->schedule_id)
-        //     // ->where('day', $request->day)
-        //     ->where(function ($query) use ($request) {
-        //         $query->whereBetween('start_time', [$request->start_time . ':00', $request->end_time . ':00'])
-        //             ->orWhereBetween('end_time', [$request->start_time . ':00', $request->end_time . ':00']);
-        //     })
-        //     ->first();
+        $scheduleDetail = ScheduleDetail::query()
+            ->where('schedule_id', $request->schedule_id)
+            ->where('day', $request->day)
+            ->get();
 
-        // dd($request->all(), $scheduleDetail, $request->start_time . ':00', $request->end_time . ':00');
+        $listSchedules = [
+            ['start_time' => '07:30', 'end_time' => '10:00'],
+            ['start_time' => '10:05', 'end_time' => '12:35'],
+            ['start_time' => '10:15', 'end_time' => '12:45'],
+            ['start_time' => '13:00', 'end_time' => '15:30'],
+        ];
 
-        // if ($scheduleDetail) {
-        //     return redirect()->back()->with('failed', 'Jadwal sudah ada');
-        // }
+        $recomendationSchedule = [];
+        $removedSchedule = [];
+        foreach ($scheduleDetail as $value) {
+            if (
+                ($request->start_time . ':00' <= $value->end_time && $request->start_time . ':00' >= $value->start_time) ||
+                ($request->end_time . ':00' <= $value->end_time && $request->end_time . ':00' >= $value->start_time)
+            ) {
+
+                foreach ($listSchedules as $schedule) {
+                    $isRecom = false;
+
+                    foreach ($scheduleDetail as $row) {
+                        if (
+                            ($schedule['start_time'] . ':00' <= $row->end_time && $schedule['start_time'] . ':00' >= $row->start_time) ||
+                            ($schedule['end_time'] . ':00' <= $row->end_time && $schedule['end_time'] . ':00' >= $row->start_time)
+                        ) {
+                            array_push($removedSchedule, $schedule);
+                            break;
+                        } else {
+                            $isRecom = true;
+                        }
+                    }
+
+                    if ($isRecom) {
+                        array_push($recomendationSchedule, $schedule);
+                    }
+                }
+
+                foreach ($removedSchedule as $sec) {
+                    $startTime = $sec['start_time'];
+                    $recomendationSchedule = array_filter($recomendationSchedule, function ($sce) use ($startTime) {
+                        return $sce['start_time'] !== $startTime;
+                    });
+                }
+                $recomendationSchedule = array_values($recomendationSchedule);
+
+                return redirect()
+                    ->back()
+                    ->with('failed', 'Jadwal sudah tersedia')
+                    ->with('recomendation', $recomendationSchedule)
+                    ->withInput();
+            }
+        }
 
         ScheduleDetail::create([
             'schedule_id' => $request->schedule_id,

@@ -38,6 +38,7 @@
             <li class="{{ (
                     request()->routeIs('schedule.index') OR
                     request()->routeIs('schedule.show') OR
+                    request()->routeIs('schedule.create') OR
                     request()->routeIs('schedule-detail.create')
                 ) ? 'active' : '' }}">
                 <a href="{{ route('schedule.index') }}"><i class="fa fa-calendar"></i> <span class="nav-label">Jadwal</span></a>

@@ -50,7 +50,11 @@
                                 <select class="select2-matkul form-control" name="matkul_id" id="matkul_id" required>
                                     <option value=""></option>
                                     @foreach($matkul as $row)
+                                    @if(old('matkul_id') == $row->id)
+                                    <option value="{{ $row->id }}" selected>({{ $row->code }}) {{ $row->name }} - {{ $row->sks }} SKS</option>
+                                    @else
                                     <option value="{{ $row->id }}">({{ $row->code }}) {{ $row->name }} - {{ $row->sks }} SKS</option>
+                                    @endif
                                     @endforeach
                                 </select>
                                 <small class="text-danger" id="matkul_id_error"></small>
@@ -62,7 +66,11 @@
                                 <select class="select2-class form-control" name="class_id" id="class_id" required>
                                     <option value=""></option>
                                     @foreach($class as $row)
+                                    @if(old('class_id') == $row->id)
+                                    <option value="{{ $row->id }}" selected>{{ $row->name }} ({{ $row->angkatan }})</option>
+                                    @else
                                     <option value="{{ $row->id }}">{{ $row->name }} ({{ $row->angkatan }})</option>
+                                    @endif
                                     @endforeach
                                 </select>
                                 <small class="text-danger" id="class_id_error"></small>
@@ -71,7 +79,7 @@
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label">SKS</label>
                             <div class="col-md-9">
-                                <input type="number" name="sks" id="sks" class="form-control" required>
+                                <input type="number" name="sks" id="sks" class="form-control" value="{{ old('sks') }}" required>
                                 <small class="text-danger" id="sks_error"></small>
                             </div>
                         </div>
@@ -80,11 +88,14 @@
                             <div class="col-md-9">
                                 <select class="form-control" name="day" id="day" required>
                                     <option value="">Pilih Hari</option>
-                                    <option value="Senin">Senin</option>
-                                    <option value="Selasa">Selasa</option>
-                                    <option value="Rabu">Rabu</option>
-                                    <option value="Kamis">Kamis</option>
-                                    <option value="Jumat">Jumat</option>
+                                    @php $days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'] @endphp
+                                    @foreach($days as $day)
+                                    @if(old('day') == $day)
+                                    <option value="{{ $day }}" selected>{{ $day }}</option>
+                                    @else
+                                    <option value="{{ $day }}">{{ $day }}</option>
+                                    @endif
+                                    @endforeach
                                 </select>
                                 <small class="text-danger" id="day_error"></small>
                             </div>
@@ -105,12 +116,22 @@
                                         <small class="text-danger" id="end_time_error"></small>
                                     </div>
                                 </div>
+                                @if(session('recomendation'))
+                                <span>
+                                    Alternatif Jam (tersedia)
+                                    <ul>
+                                        @foreach(session('recomendation') as $row)
+                                        <li>{{ $row['start_time'] }} s.d {{ $row['end_time'] }}</li>
+                                        @endforeach
+                                    </ul>
+                                </span>
+                                @endif
                             </div>
                         </div>
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label">Ruangan</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" name="room" id="room" required>
+                                <input type="text" class="form-control" name="room" id="room" value="{{ old('room') }}" required>
                                 <small class="text-danger" id="room_error"></small>
                             </div>
                         </div>

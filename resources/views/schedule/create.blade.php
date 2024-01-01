@@ -35,10 +35,16 @@
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label">Dosen</label>
                             <div class="col-md-9">
-                                <select class="select2-dosen form-control" name="user_id" id="user_id" value="{{ old('user_id') }}" required>
+                                <select class="select2-dosen form-control" name="user_id" id="user_id" required>
                                     <option value=""></option>
                                     @foreach($dosen as $row)
+
+                                    @if(old('user_id') == $row->id)
+                                    <option value="{{ $row->id }}" selected>{{ $row->name }} ({{ $row->email }})</option>
+                                    @else
                                     <option value="{{ $row->id }}">{{ $row->name }} ({{ $row->email }})</option>
+                                    @endif
+
                                     @endforeach
                                 </select>
                                 <small class="text-danger" id="user_id_error"></small>
@@ -47,9 +53,13 @@
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label">Tahun Akademik</label>
                             <div class="col-md-9">
-                                <select class="select2-tahun-akademik form-control" name="academic_year" id="academic_year" value="{{ old('academic_year') }}" required>
+                                <select class="select2-tahun-akademik form-control" name="academic_year" id="academic_year" required>
                                     <option value=""></option>
-                                    @for ($i = 2019; $i < 2029; $i++) <option value="{{ $i }}/{{ $i+1 }}">{{ $i }}/{{ $i+1 }}</option>
+                                    @for ($i = 2019; $i < 2029; $i++) @php $academic_year=$i . '/' . ($i+1) @endphp @if(old('academic_year')==$academic_year) <option value="{{ $academic_year }}" selected>{{ $academic_year }}</option>
+                                        @else
+                                        <option value="{{ $academic_year }}">{{ $academic_year }}</option>
+                                        @endif
+
                                         @endfor
                                 </select>
                                 <small class="text-danger" id="academic_year_error"></small>
@@ -58,10 +68,17 @@
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label">Periode</label>
                             <div class="col-md-9">
-                                <select class="select2-periode form-control" name="type_periode" id="type_periode" value="{{ old('type_periode') }}" required>
+                                <select class="select2-periode form-control" name="type_periode" id="type_periode" required>
                                     <option value=""></option>
-                                    <option value="Ganjil">Ganjil</option>
-                                    <option value="Genap">Genap</option>
+
+                                    @php $gages = ['Ganjil', 'Genap'] @endphp
+                                    @foreach($gages as $gage)
+                                    @if(old('type_periode') == $gage)
+                                    <option value="{{ $gage }}" selected>{{ $gage }}</option>
+                                    @else
+                                    <option value="{{ $gage }}">{{ $gage }}</option>
+                                    @endif
+                                    @endforeach
                                 </select>
                                 <small class="text-danger" id="type_periode_error"></small>
                             </div>
