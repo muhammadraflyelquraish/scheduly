@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Exports\ScheduleExport;
-use App\Models\Matkul;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Http\JsonResponse;
@@ -12,6 +11,7 @@ use App\Models\User;
 use Illuminate\Http\Response;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\DataTables;
+use PDF;
 
 class ScheduleController extends Controller
 {
@@ -47,7 +47,8 @@ class ScheduleController extends Controller
             ->addIndexColumn()
             ->addColumn('action', function ($row) {
                 $button = '<div class="btn-group pull-right">';
-                $button .= '<button class="btn btn-sm btn-danger" type="button" data-toggle="modal" data-target="#downloadModal"><i class="fa fa-download"></i></button>';
+                $button .= '<button class="btn btn-sm btn-primary" type="button" id="downloadBtn" data-toggle="modal" data-integrity="' . $row->id . '" data-target="#downloadModal"><i class="fa fa-code"></i></button>';
+                // $button .= '<a class="btn btn-sm btn-danger" href="' . route('schedule.download', ['scheduleId' => $row->id]) . '" target="_blank"><i class="fa fa-download"></i></a>';
                 $button .= '<a class="btn btn-sm btn-success" href="' . route('schedule.show', $row->id) . '"><i class="fa fa-eye"></i></a>';
                 if (auth()->user()->role->name == 'Admin' || auth()->user()->role->name == 'Staff') {
                     $button .= '<a class="btn btn-sm btn-warning" href="' . route('schedule.edit', $row->id) . '"><i class="fa fa-edit"></i></a>';
@@ -152,9 +153,19 @@ class ScheduleController extends Controller
         }
     }
 
-    public function export(Request $request)
+    function export(Request $request)
     {
         $time = date('dMY-His');
         return Excel::download(new ScheduleExport($request), 'schedule-' . $time . '.xlsx');
+    }
+
+    function downloadPDF(Request $request)
+    {
+        $schedule = Schedule::find($request->query('scheduleId'));
+        $schedule->load('user')
+            ->load('detail');
+
+        $pdf = PDF::loadview('pdf.schedule', ['schedule' => $schedule]);
+        return $pdf->stream();
     }
 }

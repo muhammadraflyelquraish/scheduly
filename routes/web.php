@@ -21,8 +21,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
+Route::get('/schedule/download', [ScheduleController::class, 'downloadPDF'])->name('schedule.download');
+
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard/data', [DashboardController::class, 'data'])->name('dashboard.data');
 
     Route::resource('/class', ClassesController::class);
     Route::resource('/matkul', MatkulController::class);
@@ -34,5 +38,6 @@ Route::middleware('auth')->group(function () {
     Route::resource('/schedule-matkul-class', ScheduleMatkulClassController::class);
     Route::resource('/user', UserController::class);
 });
+
 
 require __DIR__ . '/auth.php';

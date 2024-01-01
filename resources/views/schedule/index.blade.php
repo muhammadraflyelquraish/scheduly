@@ -84,6 +84,8 @@
     </div>
 </div>
 
+<input type="hidden" id="scheduleId">
+
 <div class="modal fade" id="downloadModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
@@ -95,12 +97,12 @@
             </div>
             <div class="modal-body">
                 <div style="padding-left: 45px;">
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Example" alt="">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Example" id="imgLink" alt="">
                 </div>
             </div>
             <div class="modal-footer justify-content-between">
                 <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times-rectangle-o mr-1"></i>Tutup [Esc]</button>
-                <button type="submit" class="btn btn-danger ladda-button ladda-button-demo" data-style="zoom-in" id="submit" tabindex="4"><i class="fa fa-file mr-1"></i>Download [PDF]</button>
+                <a class="btn btn-danger" href="" id="downloadModalButton" target="_blank"><i class="fa fa-check-square mr-1"></i>Download [PDF]</a>
             </div>
         </div>
     </div>
@@ -116,7 +118,16 @@
             let button = $(e.relatedTarget)
             let closeTr = button.closest('tr')
             let modal = $(this)
+            let scheduleId = $('#scheduleId').val()
+            let url = "{{ url('/schedule/download') }}" + "?scheduleId=" + scheduleId
             modal.find('#modal-title').text(`${closeTr.find('td:eq(1)').text()}`);
+            modal.find('#downloadModalButton').attr('href', url)
+            modal.find('#imgLink').attr('src', 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' + url)
+        })
+
+        $(document).on('click', '#downloadBtn', function(e) {
+            let id = $(this).data('integrity')
+            $('#scheduleId').val(id)
         })
 
         $(".select2-tahun-akademik").select2({
