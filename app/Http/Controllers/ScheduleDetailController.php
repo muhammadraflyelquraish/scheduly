@@ -25,14 +25,14 @@ class ScheduleDetailController extends Controller
 
     function store(Request $request)
     {
-        // $scheduleDetail = ScheduleDetail::query()
-        //     // ->where('schedule_id', $request->schedule_id)
-        //     // ->where('day', $request->day)
-        //     ->where(function ($query) use ($request) {
-        //         $query->whereBetween('start_time', [$request->start_time . ':00', $request->end_time . ':00'])
-        //             ->orWhereBetween('end_time', [$request->start_time . ':00', $request->end_time . ':00']);
-        //     })
-        //     ->first();
+        $scheduleDetail = ScheduleDetail::query()
+            // ->where('schedule_id', $request->schedule_id)
+            // ->where('day', $request->day)
+            ->where(function ($query) use ($request) {
+                $query->whereBetween('start_time', [$request->start_time . ':00', $request->end_time . ':00'])
+                    ->orWhereBetween('end_time', [$request->start_time . ':00', $request->end_time . ':00']);
+            })
+            ->first();
 
         // dd($request->all(), $scheduleDetail, $request->start_time . ':00', $request->end_time . ':00');
 
