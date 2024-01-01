@@ -28,15 +28,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/data', [DashboardController::class, 'data'])->name('dashboard.data');
 
-    Route::resource('/class', ClassesController::class);
-    Route::resource('/matkul', MatkulController::class);
+    Route::resource('/class', ClassesController::class)->middleware('can:isAdminOrStaff');
+    Route::resource('/matkul', MatkulController::class)->middleware('can:isAdminOrStaff');
     Route::get('/schedule/data', [ScheduleController::class, 'data'])->name('schedule.data');
     Route::get('/order/export', [ScheduleController::class, 'export'])->name('schedule.export');
     Route::resource('/schedule', ScheduleController::class);
     Route::resource('/schedule-detail', ScheduleDetailController::class);
     Route::resource('/schedule-matkul', ScheduleMatkulController::class);
     Route::resource('/schedule-matkul-class', ScheduleMatkulClassController::class);
-    Route::resource('/user', UserController::class);
+    Route::resource('/user', UserController::class)->middleware('can:isAdmin');
 });
 
 

@@ -5,7 +5,8 @@
                 <div class="dropdown profile-element">
                     <img alt="image" class="rounded-circle" src="{{ asset('assets') }}/img/profile_small.jpg" />
                     <div class="dropdown-toggle">
-                        <span class="block m-t-xs font-bold text-white">Hai, {{ explode(" ", auth()->user()->name)[0] }}..</span>
+                        <span class="block m-t-xs font-bold text-white">Hai,
+                            {{ explode(' ', auth()->user()->name)[0] }}..</span>
                         <span class="text-muted text-xs block">{{ ucfirst(auth()->user()->role->name) }}</span>
                     </div>
                 </div>
@@ -16,16 +17,13 @@
 
             @php $role = auth()->user()->role->name @endphp
 
-            @if (
-            $role == 'Admin' ||
-            $role == 'Pimpinan'
-            )
-            <li class="{{( request()->routeIs('dashboard')) ? 'active' : '' }}">
+            @if ($role == 'Admin' || $role == 'Pimpinan')
+            <li class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">
                 <a href="{{ route('dashboard') }}"><i class="fa fa-th-large"></i> <span class="nav-label">Dashboard</span></a>
             </li>
             @endif
 
-            @if ($role == 'Admin')
+            @if ($role == 'Admin' || $role == 'Staff')
             <li class="{{ request()->routeIs('class.index') ? 'active' : '' }}">
                 <a href="{{ route('class.index') }}"><i class="fa fa-university"></i> <span class="nav-label">Kelas</span></a>
             </li>
